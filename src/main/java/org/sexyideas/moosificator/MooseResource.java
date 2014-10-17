@@ -67,7 +67,7 @@ public class MooseResource {
     private LoadingCache<MooseRequest, Optional<byte[]>> gifCache;
     private float noFaceOverlayRatio;
 
-    private static Pattern PNG_PATTERN = Pattern.compile("^(\\w+)-(\\d+)-(\\d+)-(\\d+)\\.png$");
+    private static Pattern NAMED_OVERLAY_PATTERN = Pattern.compile("^(\\w+)-(\\d+)-(\\d+)-(\\d+)\\.(gif|png)$");
 
     public void initializeIfRequired() {
         // This is an imperfect solution but it should be fine. If multiple requests come in at the same
@@ -85,7 +85,7 @@ public class MooseResource {
                 String dir = MoosificatorApp.class.getResource("/moose/named/").getPath();
                 try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(Paths.get(dir))) {
                     for (java.nio.file.Path path : directoryStream) {
-                        Matcher matcher = PNG_PATTERN.matcher(path.getFileName().toString());
+                        Matcher matcher = NAMED_OVERLAY_PATTERN.matcher(path.getFileName().toString());
                         if (matcher.matches()) {
                             namedMooseOverlays.put(matcher.group(1), new MooseImage(
                                     ImageIO.read(MoosificatorApp.class.getResourceAsStream("/moose/named/" + path.getFileName())),
